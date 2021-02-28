@@ -1,0 +1,62 @@
+{
+	"id": "4c1da975-a0bd-4170-8fa2-2578df7c794f",
+	"brand": "Apple",
+	"name": "Macbook Air",
+	"cpu": {
+		"brand": "Intel",
+		"name": "Core i3-1005G1",
+		"numberCores": 5,
+		"numberThreads": 12,
+		"minGhz": 0.33510127148577923,
+		"maxGhz": 1.5091000563913524
+	},
+	"ram": {
+		"value": "40",
+		"unit": "GIGABYTE"
+	},
+	"gpus": [
+		{
+			"brand": "Nvidia",
+			"name": "RTX 2060",
+			"minGhz": 1.2091757987188656,
+			"maxGhz": 1.78779664951978,
+			"memory": {
+				"value": "6",
+				"unit": "GIGABYTE"
+			}
+		}
+	],
+	"storages": [
+		{
+			"driver": "SSD",
+			"memory": {
+				"value": "686",
+				"unit": "GIGABYTE"
+			}
+		},
+		{
+			"driver": "HDD",
+			"memory": {
+				"value": "6",
+				"unit": "TERABYTE"
+			}
+		}
+	],
+	"screen": {
+		"sizeInch": 16.293854,
+		"resolution": {
+			"width": 5808,
+			"height": 3267
+		},
+		"panel": "IPS",
+		"multitouch": true
+	},
+	"keyboard": {
+		"layout": "AZERTY",
+		"backlit": false
+	},
+	"weightKg": 2.4363316506847057,
+	"priceUsd": 2211.3214367657033,
+	"releaseYear": 2016,
+	"updatedAt": "2021-02-26T05:54:17.197607700Z"
+}

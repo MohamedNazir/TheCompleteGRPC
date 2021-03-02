@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"log"
-	"time"
 
 	"github.com/MohamedNazir/TheCompleteGRPC/pb/github.com/MohamedNazir/TheCompleteGRPC/proto/pb"
 	"github.com/google/uuid"
@@ -39,7 +38,7 @@ func (server *LaptopServer) CreateLaptop(ctx context.Context, req *pb.CreateLapt
 
 	// START :
 	// Lets assume, the server takes time to process the request, to test the testcase with timeout in the context
-	time.Sleep(6 * time.Second)
+	//	time.Sleep(6 * time.Second)
 	// END:
 
 	if err := contextError(ctx); err != nil {
@@ -85,9 +84,9 @@ func logError(err error) error {
 
 func (server *LaptopServer) SearchLaptop(req *pb.SerachLaptopRequest, stream pb.LaptopService_SearchLaptopServer) error {
 	filter := req.GetFilter()
-	log.Printf("received a search laptop request with filter :%w", filter)
+	log.Printf("received a search laptop request with filter :%v", filter)
 
-	err := server.Store.Search(filter,
+	err := server.Store.Search(stream.Context(), filter,
 		func(laptop *pb.Laptop) error {
 			res := &pb.SearchLaptopResponse{
 				Laptop: laptop,

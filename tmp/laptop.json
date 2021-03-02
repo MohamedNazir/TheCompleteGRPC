@@ -1,27 +1,27 @@
 {
-	"id": "4c1da975-a0bd-4170-8fa2-2578df7c794f",
-	"brand": "Apple",
-	"name": "Macbook Air",
+	"id": "027ae12e-799a-4e9c-a9f1-59ea0f51e695",
+	"brand": "Lenovo",
+	"name": "Thinkpad X1",
 	"cpu": {
 		"brand": "Intel",
-		"name": "Core i3-1005G1",
-		"numberCores": 5,
-		"numberThreads": 12,
-		"minGhz": 0.33510127148577923,
-		"maxGhz": 1.5091000563913524
+		"name": "Xeon E-2286M",
+		"numberCores": 4,
+		"numberThreads": 8,
+		"minGhz": 1.2484078614480778,
+		"maxGhz": 1.8447316922489596
 	},
 	"ram": {
-		"value": "40",
+		"value": "7",
 		"unit": "GIGABYTE"
 	},
 	"gpus": [
 		{
-			"brand": "Nvidia",
-			"name": "RTX 2060",
-			"minGhz": 1.2091757987188656,
-			"maxGhz": 1.78779664951978,
+			"brand": "AMD",
+			"name": "RX 5700-XT",
+			"minGhz": 1.492445598236481,
+			"maxGhz": 1.5705416317855934,
 			"memory": {
-				"value": "6",
+				"value": "4",
 				"unit": "GIGABYTE"
 			}
 		}
@@ -30,7 +30,7 @@
 		{
 			"driver": "SSD",
 			"memory": {
-				"value": "686",
+				"value": "458",
 				"unit": "GIGABYTE"
 			}
 		},
@@ -43,20 +43,20 @@
 		}
 	],
 	"screen": {
-		"sizeInch": 16.293854,
+		"sizeInch": 13.901699,
 		"resolution": {
-			"width": 5808,
-			"height": 3267
+			"width": 6117,
+			"height": 3441
 		},
-		"panel": "IPS",
+		"panel": "OLED",
 		"multitouch": true
 	},
 	"keyboard": {
 		"layout": "AZERTY",
 		"backlit": false
 	},
-	"weightKg": 2.4363316506847057,
-	"priceUsd": 2211.3214367657033,
-	"releaseYear": 2016,
-	"updatedAt": "2021-02-26T05:54:17.197607700Z"
+	"weightKg": 1.9846636710062753,
+	"priceUsd": 2670.2623739798455,
+	"releaseYear": 2018,
+	"updatedAt": "2021-02-28T08:45:59.673895800Z"
 }

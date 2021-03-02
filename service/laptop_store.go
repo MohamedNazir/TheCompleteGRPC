@@ -1,8 +1,10 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"log"
 	"sync"
 
 	"github.com/MohamedNazir/TheCompleteGRPC/pb/github.com/MohamedNazir/TheCompleteGRPC/proto/pb"
@@ -14,7 +16,7 @@ var ErrAlreadyExists = errors.New("record already exists")
 type LaptopStore interface {
 	Save(laptop *pb.Laptop) error
 	FindById(id string) (*pb.Laptop, error)
-	Search(filter *pb.Filter, found func(laptop *pb.Laptop) error) error // found is a callback function
+	Search(ctx context.Context, filter *pb.Filter, found func(laptop *pb.Laptop) error) error // found is a callback function
 }
 
 type InMemLaptopStore struct {
@@ -47,8 +49,8 @@ func (store *InMemLaptopStore) Save(laptop *pb.Laptop) error {
 }
 
 func (store *InMemLaptopStore) FindById(id string) (*pb.Laptop, error) {
-	store.mutex.Lock()
-	defer store.mutex.Unlock()
+	store.mutex.RLock()
+	defer store.mutex.RUnlock()
 	laptop := store.data[id]
 	if laptop == nil {
 		return nil, nil
@@ -56,11 +58,25 @@ func (store *InMemLaptopStore) FindById(id string) (*pb.Laptop, error) {
 	return deepCopy(laptop)
 }
 
-func (store *InMemLaptopStore) Search(filter *pb.Filter, found func(laptop *pb.Laptop) error) error {
+func (store *InMemLaptopStore) Search(ctx context.Context, filter *pb.Filter, found func(laptop *pb.Laptop) error) error {
 	store.mutex.RLock()
 	defer store.mutex.RUnlock()
 
+	fmt.Println("The sizez of Store is", len(store.data))
+
 	for _, laptop := range store.data {
+
+		// START :
+		// Lets assume, the server takes time to process the request, to test the testcase with timeout in the context
+		//	time.Sleep(time.Second)
+		log.Println("checking laptop with ID :", laptop.GetId())
+		// END:
+
+		if ctx.Err() == context.Canceled || ctx.Err() == context.DeadlineExceeded {
+			log.Println("context cancelled or Deadline Exceeded")
+			return errors.New("context is cancelled")
+		}
+
 		if isQualified(filter, laptop) {
 			//deep copy
 			other, err := deepCopy(laptop)

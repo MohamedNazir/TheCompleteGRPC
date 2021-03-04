@@ -22,6 +22,9 @@ It has these top-level messages:
 	CreateLaptopResponse
 	SerachLaptopRequest
 	SearchLaptopResponse
+	UploadImageRequest
+	ImageInfo
+	UploadImageResponse
 	Memory
 	CPU
 	GPU

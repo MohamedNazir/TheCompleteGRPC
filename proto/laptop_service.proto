@@ -7,24 +7,48 @@ option go_package = "github.com/MohamedNazir/TheCompleteGRPC/proto/pb";
 import "laptop_message.proto";
 import "filter_message.proto";
 
+//Unary request
 message CreateLaptopRequest {
   Laptop laptop = 1;
 }
 
+//Unary response
 message CreateLaptopResponse {
   string id = 1;
 }
 
+//ServerSide Streaming Request
 message SerachLaptopRequest{
   Filter filter=1;
 }
 
+//ServerSide Streaming Response
 message SearchLaptopResponse{
   Laptop laptop=1;
+}
+
+//clientside streaming request
+message UploadImageRequest{
+  oneof data{
+    ImageInfo Info =1;
+    bytes chunk_data=2;
+  }
+}
+message ImageInfo{
+  string laptop_id=1;
+  string image_type =2;
+}
+
+//clientside streaming response
+message UploadImageResponse{
+  string id=1;
+  uint64 size=2;
 }
 
 service LaptopService {
   rpc CreateLaptop(CreateLaptopRequest) returns (CreateLaptopResponse) {};
   //Server Streaming
   rpc SearchLaptop (SerachLaptopRequest) returns (stream  SearchLaptopResponse) {};
+  //Client side streaming
+  rpc UploadImage(stream UploadImageRequest) returns (UploadImageResponse){};
 }

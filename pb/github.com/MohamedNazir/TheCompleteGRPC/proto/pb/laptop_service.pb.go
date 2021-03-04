@@ -17,6 +17,7 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// Unary request
 type CreateLaptopRequest struct {
 	Laptop *Laptop `protobuf:"bytes,1,opt,name=laptop" json:"laptop,omitempty"`
 }
@@ -33,6 +34,7 @@ func (m *CreateLaptopRequest) GetLaptop() *Laptop {
 	return nil
 }
 
+// Unary response
 type CreateLaptopResponse struct {
 	Id string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
 }
@@ -49,6 +51,7 @@ func (m *CreateLaptopResponse) GetId() string {
 	return ""
 }
 
+// ServerSide Streaming Request
 type SerachLaptopRequest struct {
 	Filter *Filter `protobuf:"bytes,1,opt,name=filter" json:"filter,omitempty"`
 }
@@ -65,6 +68,7 @@ func (m *SerachLaptopRequest) GetFilter() *Filter {
 	return nil
 }
 
+// ServerSide Streaming Response
 type SearchLaptopResponse struct {
 	Laptop *Laptop `protobuf:"bytes,1,opt,name=laptop" json:"laptop,omitempty"`
 }
@@ -81,11 +85,179 @@ func (m *SearchLaptopResponse) GetLaptop() *Laptop {
 	return nil
 }
 
+// clientside streaming request
+type UploadImageRequest struct {
+	// Types that are valid to be assigned to Data:
+	//	*UploadImageRequest_Info
+	//	*UploadImageRequest_ChunkData
+	Data isUploadImageRequest_Data `protobuf_oneof:"data"`
+}
+
+func (m *UploadImageRequest) Reset()                    { *m = UploadImageRequest{} }
+func (m *UploadImageRequest) String() string            { return proto.CompactTextString(m) }
+func (*UploadImageRequest) ProtoMessage()               {}
+func (*UploadImageRequest) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{4} }
+
+type isUploadImageRequest_Data interface{ isUploadImageRequest_Data() }
+
+type UploadImageRequest_Info struct {
+	Info *ImageInfo `protobuf:"bytes,1,opt,name=Info,oneof"`
+}
+type UploadImageRequest_ChunkData struct {
+	ChunkData []byte `protobuf:"bytes,2,opt,name=chunk_data,json=chunkData,proto3,oneof"`
+}
+
+func (*UploadImageRequest_Info) isUploadImageRequest_Data()      {}
+func (*UploadImageRequest_ChunkData) isUploadImageRequest_Data() {}
+
+func (m *UploadImageRequest) GetData() isUploadImageRequest_Data {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+func (m *UploadImageRequest) GetInfo() *ImageInfo {
+	if x, ok := m.GetData().(*UploadImageRequest_Info); ok {
+		return x.Info
+	}
+	return nil
+}
+
+func (m *UploadImageRequest) GetChunkData() []byte {
+	if x, ok := m.GetData().(*UploadImageRequest_ChunkData); ok {
+		return x.ChunkData
+	}
+	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*UploadImageRequest) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _UploadImageRequest_OneofMarshaler, _UploadImageRequest_OneofUnmarshaler, _UploadImageRequest_OneofSizer, []interface{}{
+		(*UploadImageRequest_Info)(nil),
+		(*UploadImageRequest_ChunkData)(nil),
+	}
+}
+
+func _UploadImageRequest_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*UploadImageRequest)
+	// data
+	switch x := m.Data.(type) {
+	case *UploadImageRequest_Info:
+		b.EncodeVarint(1<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Info); err != nil {
+			return err
+		}
+	case *UploadImageRequest_ChunkData:
+		b.EncodeVarint(2<<3 | proto.WireBytes)
+		b.EncodeRawBytes(x.ChunkData)
+	case nil:
+	default:
+		return fmt.Errorf("UploadImageRequest.Data has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _UploadImageRequest_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*UploadImageRequest)
+	switch tag {
+	case 1: // data.Info
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(ImageInfo)
+		err := b.DecodeMessage(msg)
+		m.Data = &UploadImageRequest_Info{msg}
+		return true, err
+	case 2: // data.chunk_data
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeRawBytes(true)
+		m.Data = &UploadImageRequest_ChunkData{x}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _UploadImageRequest_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*UploadImageRequest)
+	// data
+	switch x := m.Data.(type) {
+	case *UploadImageRequest_Info:
+		s := proto.Size(x.Info)
+		n += proto.SizeVarint(1<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *UploadImageRequest_ChunkData:
+		n += proto.SizeVarint(2<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(len(x.ChunkData)))
+		n += len(x.ChunkData)
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
+type ImageInfo struct {
+	LaptopId  string `protobuf:"bytes,1,opt,name=laptop_id,json=laptopId" json:"laptop_id,omitempty"`
+	ImageType string `protobuf:"bytes,2,opt,name=image_type,json=imageType" json:"image_type,omitempty"`
+}
+
+func (m *ImageInfo) Reset()                    { *m = ImageInfo{} }
+func (m *ImageInfo) String() string            { return proto.CompactTextString(m) }
+func (*ImageInfo) ProtoMessage()               {}
+func (*ImageInfo) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{5} }
+
+func (m *ImageInfo) GetLaptopId() string {
+	if m != nil {
+		return m.LaptopId
+	}
+	return ""
+}
+
+func (m *ImageInfo) GetImageType() string {
+	if m != nil {
+		return m.ImageType
+	}
+	return ""
+}
+
+// clientside streaming response
+type UploadImageResponse struct {
+	Id   string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
+	Size uint64 `protobuf:"varint,2,opt,name=size" json:"size,omitempty"`
+}
+
+func (m *UploadImageResponse) Reset()                    { *m = UploadImageResponse{} }
+func (m *UploadImageResponse) String() string            { return proto.CompactTextString(m) }
+func (*UploadImageResponse) ProtoMessage()               {}
+func (*UploadImageResponse) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{6} }
+
+func (m *UploadImageResponse) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *UploadImageResponse) GetSize() uint64 {
+	if m != nil {
+		return m.Size
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*CreateLaptopRequest)(nil), "com.pcbook.CreateLaptopRequest")
 	proto.RegisterType((*CreateLaptopResponse)(nil), "com.pcbook.CreateLaptopResponse")
 	proto.RegisterType((*SerachLaptopRequest)(nil), "com.pcbook.SerachLaptopRequest")
 	proto.RegisterType((*SearchLaptopResponse)(nil), "com.pcbook.SearchLaptopResponse")
+	proto.RegisterType((*UploadImageRequest)(nil), "com.pcbook.UploadImageRequest")
+	proto.RegisterType((*ImageInfo)(nil), "com.pcbook.ImageInfo")
+	proto.RegisterType((*UploadImageResponse)(nil), "com.pcbook.UploadImageResponse")
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -102,6 +274,8 @@ type LaptopServiceClient interface {
 	CreateLaptop(ctx context.Context, in *CreateLaptopRequest, opts ...grpc.CallOption) (*CreateLaptopResponse, error)
 	// Server Streaming
 	SearchLaptop(ctx context.Context, in *SerachLaptopRequest, opts ...grpc.CallOption) (LaptopService_SearchLaptopClient, error)
+	// Client side streaming
+	UploadImage(ctx context.Context, opts ...grpc.CallOption) (LaptopService_UploadImageClient, error)
 }
 
 type laptopServiceClient struct {
@@ -153,12 +327,48 @@ func (x *laptopServiceSearchLaptopClient) Recv() (*SearchLaptopResponse, error) 
 	return m, nil
 }
 
+func (c *laptopServiceClient) UploadImage(ctx context.Context, opts ...grpc.CallOption) (LaptopService_UploadImageClient, error) {
+	stream, err := grpc.NewClientStream(ctx, &_LaptopService_serviceDesc.Streams[1], c.cc, "/com.pcbook.LaptopService/UploadImage", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &laptopServiceUploadImageClient{stream}
+	return x, nil
+}
+
+type LaptopService_UploadImageClient interface {
+	Send(*UploadImageRequest) error
+	CloseAndRecv() (*UploadImageResponse, error)
+	grpc.ClientStream
+}
+
+type laptopServiceUploadImageClient struct {
+	grpc.ClientStream
+}
+
+func (x *laptopServiceUploadImageClient) Send(m *UploadImageRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *laptopServiceUploadImageClient) CloseAndRecv() (*UploadImageResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(UploadImageResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // Server API for LaptopService service
 
 type LaptopServiceServer interface {
 	CreateLaptop(context.Context, *CreateLaptopRequest) (*CreateLaptopResponse, error)
 	// Server Streaming
 	SearchLaptop(*SerachLaptopRequest, LaptopService_SearchLaptopServer) error
+	// Client side streaming
+	UploadImage(LaptopService_UploadImageServer) error
 }
 
 func RegisterLaptopServiceServer(s *grpc.Server, srv LaptopServiceServer) {
@@ -204,6 +414,32 @@ func (x *laptopServiceSearchLaptopServer) Send(m *SearchLaptopResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _LaptopService_UploadImage_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(LaptopServiceServer).UploadImage(&laptopServiceUploadImageServer{stream})
+}
+
+type LaptopService_UploadImageServer interface {
+	SendAndClose(*UploadImageResponse) error
+	Recv() (*UploadImageRequest, error)
+	grpc.ServerStream
+}
+
+type laptopServiceUploadImageServer struct {
+	grpc.ServerStream
+}
+
+func (x *laptopServiceUploadImageServer) SendAndClose(m *UploadImageResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *laptopServiceUploadImageServer) Recv() (*UploadImageRequest, error) {
+	m := new(UploadImageRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 var _LaptopService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "com.pcbook.LaptopService",
 	HandlerType: (*LaptopServiceServer)(nil),
@@ -219,6 +455,11 @@ var _LaptopService_serviceDesc = grpc.ServiceDesc{
 			Handler:       _LaptopService_SearchLaptop_Handler,
 			ServerStreams: true,
 		},
+		{
+			StreamName:    "UploadImage",
+			Handler:       _LaptopService_UploadImage_Handler,
+			ClientStreams: true,
+		},
 	},
 	Metadata: "laptop_service.proto",
 }
@@ -226,23 +467,32 @@ var _LaptopService_serviceDesc = grpc.ServiceDesc{
 func init() { proto.RegisterFile("laptop_service.proto", fileDescriptor3) }
 
 var fileDescriptor3 = []byte{
-	// 282 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x91, 0x31, 0x4f, 0xc3, 0x30,
-	0x10, 0x85, 0x9b, 0x0e, 0x95, 0x38, 0x0a, 0x83, 0xc9, 0x80, 0xb2, 0x50, 0x79, 0x40, 0x88, 0x21,
-	0xa9, 0xc2, 0x2f, 0xa0, 0x91, 0x60, 0x01, 0x84, 0x12, 0x58, 0x58, 0x90, 0x93, 0x1c, 0x8d, 0x45,
-	0x82, 0x8d, 0xed, 0x32, 0xf0, 0xd7, 0xf8, 0x73, 0xa8, 0xb6, 0x51, 0x13, 0x11, 0x06, 0xb6, 0xe8,
-	0xf2, 0xdd, 0x7b, 0xef, 0x9e, 0x21, 0x6c, 0x99, 0x34, 0x42, 0x3e, 0x6b, 0x54, 0x1f, 0xbc, 0xc2,
-	0x58, 0x2a, 0x61, 0x04, 0x81, 0x4a, 0x74, 0xb1, 0xac, 0x4a, 0x21, 0x5e, 0xa3, 0x1f, 0xa2, 0x43,
-	0xad, 0xd9, 0xda, 0x13, 0x51, 0xf8, 0xc2, 0x5b, 0x83, 0x6a, 0x38, 0xa5, 0x97, 0x70, 0x94, 0x29,
-	0x64, 0x06, 0x6f, 0xec, 0x4e, 0x8e, 0xef, 0x1b, 0xd4, 0x86, 0x9c, 0xc3, 0xcc, 0x89, 0x1c, 0x07,
-	0x8b, 0xe0, 0x6c, 0x3f, 0x25, 0xf1, 0x4e, 0x3f, 0xf6, 0xa8, 0x27, 0xe8, 0x29, 0x84, 0x43, 0x09,
-	0x2d, 0xc5, 0x9b, 0x46, 0x72, 0x08, 0x53, 0x5e, 0xdb, 0xfd, 0xbd, 0x7c, 0xca, 0xeb, 0xad, 0x55,
-	0x81, 0x8a, 0x55, 0xcd, 0x2f, 0x2b, 0x97, 0x6c, 0xcc, 0xea, 0xca, 0xfe, 0xc9, 0x3d, 0x41, 0x57,
-	0x10, 0x16, 0xc8, 0xd4, 0x4e, 0xc2, 0x5b, 0xfd, 0x23, 0x6e, 0xfa, 0x15, 0xc0, 0x81, 0x1b, 0x15,
-	0xae, 0x41, 0x52, 0xc0, 0xbc, 0x7f, 0x00, 0x39, 0xe9, 0x6f, 0x8f, 0xb4, 0x13, 0x2d, 0xfe, 0x06,
-	0x5c, 0x20, 0x3a, 0x21, 0x8f, 0x30, 0xef, 0x47, 0x1d, 0x8a, 0x8e, 0xf4, 0x30, 0x14, 0x1d, 0xbb,
-	0x92, 0x4e, 0x96, 0xc1, 0x2a, 0x7d, 0x5a, 0xae, 0xb9, 0x69, 0x36, 0xe5, 0x96, 0x4e, 0x6e, 0x45,
-	0xc3, 0x3a, 0xac, 0xef, 0xd8, 0x27, 0x57, 0xc9, 0x43, 0x83, 0x99, 0xe8, 0x64, 0x8b, 0x06, 0xaf,
-	0xf3, 0xfb, 0x2c, 0xb1, 0x0f, 0x9c, 0xc8, 0xb2, 0x9c, 0xd9, 0xaf, 0x8b, 0xef, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0xb6, 0xdb, 0xf8, 0x7c, 0x3a, 0x02, 0x00, 0x00,
+	// 421 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x53, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0xb5, 0x2d, 0x2b, 0xc2, 0xd3, 0xc0, 0x61, 0x6b, 0xa4, 0xca, 0x08, 0x12, 0xf9, 0x80, 0x22,
+	0x90, 0xec, 0x2a, 0x9c, 0x38, 0x92, 0x20, 0xda, 0x48, 0x80, 0xd0, 0xba, 0xbd, 0x70, 0x89, 0xd6,
+	0xf6, 0x34, 0x5e, 0x6a, 0x67, 0x17, 0x7b, 0x83, 0xd4, 0xfe, 0x04, 0xbf, 0x8c, 0xbc, 0x76, 0x1a,
+	0x5b, 0x71, 0x0e, 0xdc, 0x56, 0x33, 0xef, 0xbd, 0x79, 0x3b, 0x6f, 0x17, 0xdc, 0x9c, 0x49, 0x25,
+	0xe4, 0xba, 0xc2, 0xf2, 0x0f, 0x4f, 0x30, 0x90, 0xa5, 0x50, 0x82, 0x40, 0x22, 0x8a, 0x40, 0x26,
+	0xb1, 0x10, 0xf7, 0xde, 0x1e, 0x51, 0x60, 0x55, 0xb1, 0x4d, 0x8b, 0xf0, 0xdc, 0x3b, 0x9e, 0x2b,
+	0x2c, 0xfb, 0x55, 0xff, 0x13, 0x9c, 0x2f, 0x4b, 0x64, 0x0a, 0xbf, 0x6a, 0x0e, 0xc5, 0xdf, 0x3b,
+	0xac, 0x14, 0x79, 0x07, 0xa3, 0x46, 0xe4, 0xc2, 0x9c, 0x9a, 0xb3, 0xb3, 0x39, 0x09, 0x0e, 0xfa,
+	0x41, 0x0b, 0x6d, 0x11, 0xfe, 0x5b, 0x70, 0xfb, 0x12, 0x95, 0x14, 0xdb, 0x0a, 0xc9, 0x0b, 0xb0,
+	0x78, 0xaa, 0xf9, 0x0e, 0xb5, 0x78, 0x5a, 0x8f, 0x8a, 0xb0, 0x64, 0x49, 0x76, 0x34, 0xaa, 0x71,
+	0x36, 0x34, 0xea, 0x8b, 0xee, 0xd0, 0x16, 0xe1, 0x2f, 0xc0, 0x8d, 0x90, 0x95, 0x07, 0x89, 0x76,
+	0xd4, 0xff, 0xd8, 0xfd, 0x05, 0xe4, 0x56, 0xe6, 0x82, 0xa5, 0xab, 0x82, 0x6d, 0x70, 0xef, 0xe2,
+	0x3d, 0xd8, 0xab, 0xed, 0x9d, 0x68, 0xf9, 0x2f, 0xbb, 0x7c, 0x8d, 0xab, 0x9b, 0xd7, 0x06, 0xd5,
+	0x20, 0x32, 0x01, 0x48, 0xb2, 0xdd, 0xf6, 0x7e, 0x9d, 0x32, 0xc5, 0x2e, 0xac, 0xa9, 0x39, 0x1b,
+	0x5f, 0x1b, 0xd4, 0xd1, 0xb5, 0xcf, 0x4c, 0xb1, 0xc5, 0x08, 0xec, 0xba, 0xe5, 0x5f, 0x81, 0xf3,
+	0xc4, 0x26, 0xaf, 0xc0, 0x69, 0x83, 0x79, 0x5a, 0xcb, 0xb3, 0xa6, 0xb0, 0x4a, 0xc9, 0x6b, 0x00,
+	0x5e, 0x23, 0xd7, 0xea, 0x41, 0xa2, 0x96, 0x74, 0xa8, 0xa3, 0x2b, 0x37, 0x0f, 0x12, 0xfd, 0x8f,
+	0x70, 0xde, 0x33, 0x3d, 0xbc, 0x62, 0x42, 0xc0, 0xae, 0xf8, 0x63, 0xc3, 0xb7, 0xa9, 0x3e, 0xcf,
+	0xff, 0x5a, 0xf0, 0xbc, 0x59, 0x41, 0xd4, 0xbc, 0x18, 0x12, 0xc1, 0xb8, 0x1b, 0x18, 0x99, 0x74,
+	0x6f, 0x3b, 0xf0, 0x1a, 0xbc, 0xe9, 0x69, 0x40, 0x63, 0xc4, 0x37, 0xc8, 0x2d, 0x8c, 0xbb, 0xd1,
+	0xf4, 0x45, 0x07, 0x72, 0xef, 0x8b, 0x0e, 0xa5, 0xea, 0x1b, 0x97, 0x26, 0xa1, 0x70, 0xd6, 0xb9,
+	0x38, 0x79, 0xd3, 0x25, 0x1d, 0xc7, 0xe8, 0x4d, 0x4e, 0xf6, 0xf7, 0x9a, 0x33, 0x73, 0x31, 0xff,
+	0x79, 0xb9, 0xe1, 0x2a, 0xdb, 0xc5, 0x35, 0x38, 0xfc, 0x26, 0x32, 0x56, 0x60, 0xfa, 0x9d, 0x3d,
+	0xf2, 0x32, 0xbc, 0xc9, 0x70, 0x29, 0x0a, 0x99, 0xa3, 0xc2, 0x2b, 0xfa, 0x63, 0x19, 0xea, 0x4f,
+	0x12, 0xca, 0x38, 0x1e, 0xe9, 0xd3, 0x87, 0x7f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xe6, 0x0c, 0x43,
+	0x11, 0x7e, 0x03, 0x00, 0x00,
 }
